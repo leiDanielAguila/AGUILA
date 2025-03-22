@@ -3,22 +3,29 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class StudentHandler {
-	Student st = new Student();
 	Scanner in = new Scanner(System.in);	
-	public void makeNewStudent() {
+	
+	public void makeNewStudent() { // make new student
 		boolean done = false;		
 		while (!done) {
 			System.out.println("--------Creating an account--------");
-			try {				
+			try {		
+				int studentId = studentIdHandler();
+				String firstName = firstNameHandler();
+				String lastName = lastNameHandler();
+				String password = passwordHandler();
+				
+				Student student = new Student(studentId, firstName, lastName, password);
+				
 				Class.forName("com.mysql.cj.jdbc.Driver");
-	        	Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/AGUILA", "root", "1234");
-	        	Statement st = connection.createStatement();
+	        	Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/AGUILA", "root", "1234");	        	
 				String query = "insert into students (student_id, first_name, last_name, password) values (?,?,?,?)";
 				PreparedStatement ps = connection.prepareStatement(query);
-				ps.setInt(1, studentIdHandler());
-				ps.setString(2, firstNameHandler());
-				ps.setString(3, lastNameHandler());
-				ps.setString(4, passwordHandler());
+			
+				ps.setInt(1, student.getStudentId());
+				ps.setString(2, student.getFirstName());
+				ps.setString(3, student.getLastName());
+				ps.setString(4, student.getPassword());
 				ps.executeUpdate();
 				System.out.println("----Account created please login----");
 				done = true;
@@ -26,6 +33,28 @@ public class StudentHandler {
 	            System.out.println("JDBC Driver not found.-------");
 	        } catch (SQLException e) {
 	            System.out.println("Database connection error.-------");
+	        }
+		}
+	}
+	
+	public void authenticateStudent() { // validate a login attempt
+		boolean done = false;
+		while (!done) {
+			System.out.println("--------Log in--------");
+			try {
+				
+				
+				
+				Class.forName("com.mysql.cj.jdbc.Driver");
+	        	Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/AGUILA", "root", "1234");
+				
+			} catch (ClassNotFoundException e) {
+	            System.out.println("JDBC Driver not found.-------");
+	        } catch (SQLException e) {
+	            System.out.println("Database connection error.-------");
+	        } catch (InputMismatchException e) {
+	            System.out.println("-------Please enter a valid student id.\n");
+	            in.next(); 
 	        }
 		}
 	}
@@ -43,8 +72,7 @@ public class StudentHandler {
 	                continue;
 	            }	        	
 	        	Class.forName("com.mysql.cj.jdbc.Driver");
-	        	Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/AGUILA", "root", "1234");
-	        	Statement st = connection.createStatement();	        	
+	        	Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/AGUILA", "root", "1234");	        	
 	    		String query = "select count(*) from students where student_id = ?"; // check for duplicates
 	    		PreparedStatement ps = connection.prepareStatement(query);
 	    		ps.setInt(1, input);

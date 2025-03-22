@@ -34,7 +34,7 @@ public class Question {
         if (current_question < questionList.size() - 1) {
             current_question++;
         } else {
-            System.out.println("This is the last question.");
+            System.out.println("\n\n\nThis is the last question.");
         }
     }
 
@@ -43,7 +43,7 @@ public class Question {
         if (current_question > 0) {
             current_question--;
         } else {
-            System.out.println("This is the first question.");
+            System.out.println("\n\n\nThis is the first question.");
         }
     }
 
@@ -121,7 +121,11 @@ public class Question {
 	}
 	
 	public void Menu() {
-		System.out.print("\nMenu:\r\n" + "[1] Previous Question\r\n" + "[2] Next Question\r\n" + "[3] Exit\r\n" + "\n Enter input: "); 
+		System.out.print("\nMenu:\r\n" 
+		+ "[1] Previous Question\r\n" 
+		+ "[2] Next Question\r\n" 
+		+ "[3] Exit\r\n" 
+		+ "\n Enter input: "); 
 	}
 	
 	public void fetchRandomQuestions(String studentNumber) {
@@ -161,7 +165,7 @@ public class Question {
             return;
         }
         Question q = questionList.get(current_question);
-        System.out.println("\n\n\nQuestion #" + q.getQuestionId());
+        System.out.println("\n\nQuestion #" + q.getQuestionId());
         System.out.println("\n" + q.getQuestion());
         System.out.println("Option A " + q.getOptionA());
         System.out.println("Option B " + q.getOptionB());

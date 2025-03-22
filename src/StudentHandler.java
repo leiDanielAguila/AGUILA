@@ -7,7 +7,11 @@ public class StudentHandler {
 	Scanner in = new Scanner(System.in);
 	
 	public void makeNewStudent() {
+		boolean done = false;
 		
+		while (!done) {
+			System.out.println("--------Creating an account--------");
+		}
 	}
 	
 	public int studentIdHandler() {
@@ -21,8 +25,8 @@ public class StudentHandler {
 	        try {
 	        	int input = in.nextInt();
 	        	
-	        	if (input <= 0 || input >= 1000) {
-	                System.out.println("student id can not be less than 1 and more than 1000.\n");
+	        	if (input <= 0) {
+	                System.out.println("student id can not be less than 1. \n");
 	                continue;
 	            }
 	        	
@@ -51,5 +55,71 @@ public class StudentHandler {
 	        }
 	    }
 	    return studentId;
+	}
+	
+	public String firstNameHandler() {
+		boolean done = false;
+		String firstName = "";
+		while(!done) {
+			System.out.print("Enter your first name: ");
+			try {
+				String input = in.nextLine();
+				if (input.trim().isEmpty()) {
+					System.out.println("first name can not be empty.");
+					done = false;
+				} else {
+					firstName = input.toLowerCase();
+					done = true;
+				}
+			} catch (InputMismatchException e) {
+				System.out.println("Please enter a valid first name.\n");
+				in.next();
+			}
+		}
+		return firstName;
+	}
+	
+	public String lastNameHandler() {
+		boolean done = false;
+		String lastName = "";
+		while(!done) {
+			System.out.print("Enter your last name: ");
+			try {
+				String input = in.nextLine();
+				if (input.trim().isEmpty()) {
+					System.out.println("last name can not be empty.");
+					done = false;
+				} else {
+					lastName = input.toLowerCase();
+					done = true;
+				}
+			} catch (InputMismatchException e) {
+				System.out.println("Please enter a valid last name.\n");
+				in.next();
+			}
+		}
+		return lastName;
+	}
+	
+	public String passwordHandler() {
+		boolean done = false;
+		String password = "";
+		while(!done) {
+			System.out.print("Enter your password: ");
+			try {
+				String input = in.nextLine();
+				if (input.trim().isEmpty()) {
+					System.out.println("password can not be empty.");
+					done = false;
+				} else {
+					password = input.toLowerCase();
+					done = true;
+				}
+			} catch (InputMismatchException e) {
+				System.out.println("Please enter a valid password.\n");
+				in.next();
+			}
+		}
+		return password;
 	}
 }

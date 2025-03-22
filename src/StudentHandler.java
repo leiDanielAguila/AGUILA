@@ -4,11 +4,9 @@ import java.util.Scanner;
 
 public class StudentHandler {
 	Student st = new Student();
-	Scanner in = new Scanner(System.in);
-	
+	Scanner in = new Scanner(System.in);	
 	public void makeNewStudent() {
-		boolean done = false;
-		
+		boolean done = false;		
 		while (!done) {
 			System.out.println("--------Creating an account--------");
 			try {				
@@ -35,24 +33,18 @@ public class StudentHandler {
 	public int studentIdHandler() {
 		boolean done = false;
 		int studentId = 0;
-
-		
 		while(!done) {
-	        System.out.print("Enter student id: ");
-	        
+	        System.out.print("Enter student id: ");	        
 	        try {
 	        	int input = in.nextInt();
-	        	in.nextLine();
-	        	
+	        	in.nextLine();	        	
 	        	if (input <= 0) {
 	                System.out.println("-------student id can not be less than 1. \n");
 	                continue;
-	            }
-	        	
+	            }	        	
 	        	Class.forName("com.mysql.cj.jdbc.Driver");
 	        	Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/AGUILA", "root", "1234");
-	        	Statement st = connection.createStatement();
-	        	
+	        	Statement st = connection.createStatement();	        	
 	    		String query = "select count(*) from students where student_id = ?"; // check for duplicates
 	    		PreparedStatement ps = connection.prepareStatement(query);
 	    		ps.setInt(1, input);

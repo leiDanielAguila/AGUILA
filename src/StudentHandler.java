@@ -29,6 +29,8 @@ public class StudentHandler {
 				ps.executeUpdate();
 				System.out.println("----Account created please login----");
 				done = true;
+				ps.close();
+				connection.close();
 			} catch (ClassNotFoundException e) {
 	            System.out.println("JDBC Driver not found.-------");
 	        } catch (SQLException e) {
@@ -39,15 +41,55 @@ public class StudentHandler {
 	
 	public void authenticateStudent() { // validate a login attempt
 		boolean done = false;
+		
 		while (!done) {
 			System.out.println("--------Log in--------");
+			System.out.print("Enter your student id: ");
+			int studentId;
 			try {
-				
-				
-				
+				studentId = in.nextInt();
+				in.nextLine();
+				if (studentId <= 0 ) {
+	                System.out.println("-------Student ID must be positive.\n");
+	                continue;
+				}
+			} catch (InputMismatchException e) {
+				 System.out.println("-------Please enter a valid student id.\n");
+		         in.nextLine(); 
+		         continue;
+			}
+			System.out.print("Enter your password: ");
+			String password;
+			password = in.nextLine();
+			
+			if (password.trim().isEmpty()) {
+				System.out.println("-------Student password must not be empty.\n");
+				continue;
+			}
+			
+			Student student = new Student();
+			student.setStudentId(studentId);
+			student.setPassword(password);
+			
+			try {
 				Class.forName("com.mysql.cj.jdbc.Driver");
 	        	Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/AGUILA", "root", "1234");
+				String query = "select * from students where student_id = ? and password = ?";
+				PreparedStatement ps = connection.prepareStatement(query);
 				
+				ps.setInt(1, student.getStudentId());
+				ps.setString(2, student.getPassword());
+				ResultSet rs = ps.executeQuery();
+				
+				if (rs.next()) {
+					System.out.println("-----Login successful!-----");
+					done = true;
+				} else {
+					System.out.println("----Invalid student ID or password. Please try again.----");
+	            }
+				rs.close();
+	            ps.close();
+	            connection.close();
 			} catch (ClassNotFoundException e) {
 	            System.out.println("JDBC Driver not found.-------");
 	        } catch (SQLException e) {
@@ -56,6 +98,7 @@ public class StudentHandler {
 	            System.out.println("-------Please enter a valid student id.\n");
 	            in.next(); 
 	        }
+			
 		}
 	}
 	
@@ -84,6 +127,8 @@ public class StudentHandler {
 	                done = true;
 	                studentId = input;
 	            }
+	        	ps.close();
+	        	connection.close();
 	        } catch (InputMismatchException e) {
 	            System.out.println("-------Please enter a valid integer.\n");
 	            in.next(); 

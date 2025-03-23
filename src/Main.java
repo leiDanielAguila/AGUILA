@@ -37,7 +37,8 @@ public class Main {
     		switch (quiz_choice) {
     			case 1:
     				q.fetchQuestions();
-    				
+    				quiz.makeNewQuiz(s.getStudent().getStudentId(), q.getQuestionIdOrderAsString());
+    				done = true;
     				break;
     			case 2:
     				done = true;

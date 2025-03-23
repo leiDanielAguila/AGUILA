@@ -67,7 +67,7 @@ public class QuestionHandlers {
 		return this.question_id_container;
 	}
 	
-	public String getQuestionIdOrderAsString() { // for storing
+	public String getQuestionIdOrderAsString() { // for storing to database
 	    StringBuilder sb = new StringBuilder();
 	    for (int i = 0; i < question_id_container.size(); i++) {
 	        sb.append(question_id_container.get(i));

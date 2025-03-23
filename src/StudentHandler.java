@@ -107,7 +107,7 @@ public class StudentHandler {
 		
 	}
 	
-	public Student getStudent() {
+	public Student getStudent() { // for returning authenticated student
 		return this.student;
 	}
 	

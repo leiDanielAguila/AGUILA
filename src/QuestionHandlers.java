@@ -67,7 +67,7 @@ public class QuestionHandlers {
 		return this.question_id_container;
 	}
 	
-	public String getQuestionIdOrderAsString() {
+	public String getQuestionIdOrderAsString() { // for storing
 	    StringBuilder sb = new StringBuilder();
 	    for (int i = 0; i < question_id_container.size(); i++) {
 	        sb.append(question_id_container.get(i));
@@ -79,7 +79,7 @@ public class QuestionHandlers {
 	    return sb.toString();
 	}
 	
-	public void setQuestionIdOrderFromString(String idString) {
+	public void setQuestionIdOrderFromString(String idString) { // for geting from database
 	    question_id_container.clear(); 
 	    if (idString != null && !idString.isEmpty()) {
 	        String[] idArray = idString.split(",");

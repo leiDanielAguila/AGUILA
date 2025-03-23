@@ -39,8 +39,9 @@ public class StudentHandler {
 		}
 	}
 	
-	public void authenticateStudent() { // validate a login attempt
+	public Student authenticateStudent() { // validate a login attempt
 		boolean done = false;
+		Student student = new Student();
 		
 		while (!done) {
 			System.out.println("\n\n\n\n--------Log in--------");
@@ -67,7 +68,7 @@ public class StudentHandler {
 				continue;
 			}
 			
-			Student student = new Student();
+			
 			student.setStudentId(studentId);
 			student.setPassword(password);
 			
@@ -82,6 +83,8 @@ public class StudentHandler {
 				ResultSet rs = ps.executeQuery();
 				
 				if (rs.next()) {
+					String first_name = rs.getString("first_name");
+					student.setFirstName(first_name);
 					System.out.println("\n\n\n\n-----Login successful!-----\n");
 					done = true;
 				} else {
@@ -100,6 +103,7 @@ public class StudentHandler {
 	        }
 			
 		}
+		return student;
 	}
 	
 	public int studentIdHandler() {

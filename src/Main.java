@@ -4,32 +4,35 @@ public class Main {
     	StudentHandler s = new StudentHandler();
     	QuestionHandlers q = new QuestionHandlers();
     	Scanner in = new Scanner(System.in);
-    	boolean login = false;
-    	boolean makeQuiz = false;
-    	
-    	while (!login) {
-    		System.out.println("------QUIZ------");
-    		System.out.println("\n[1] sign up\n[2] login\n[3] Exit");
-    		System.out.print("Enter choice:");
-    		int login_choice = in.nextInt();
+    	boolean done = false;
+    	q.fetchQuestions();
+    	while (!done) {
     		
-    		switch (login_choice) {
+    		q.displayQuestions();
+    		System.out.println("\n[1] Previous\n[2] Next\n[3] Exit");
+    		System.out.print("Enter choice:");
+    		int choice = in.nextInt();
+    		
+    		switch (choice) {
     			case 1:
-    				s.makeNewStudent();
+    				q.previousQuestion();
     				break;
     			case 2:
-    				System.out.println("Welcome, " + s.authenticateStudent().getFirstName());
+    				q.nextQuestion();
     				break;
     			case 3:
-    				login = true;
+    				done = true;
     				break;
     		}
+
     		System.out.println("------MENU------");
     		System.out.println("\n[1] New Quiz\n[2] Exit\n");
     		System.out.print("Enter choice:");
     		int quiz_choice = in.nextInt();
     		
+    		// comment test
     	}
+
     	
     	//q.displayQuestions();
     	//System.out.println(q.getQuestionIdOrder());

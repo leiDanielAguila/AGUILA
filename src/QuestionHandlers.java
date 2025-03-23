@@ -4,6 +4,20 @@ import java.util.List;
 public class QuestionHandlers {
 	Question question = new Question();
 	private List<Question> questionContainer = new ArrayList<Question>();
+	private List<Integer> question_id_container = new ArrayList<Integer>();
+	private int current_question = 0;
+	
+	public void nextQuestion() {
+		if (current_question < questionContainer.size() - 1) {
+			current_question+=1;			
+		} else {
+			System.out.println("-------this is the last question.");
+		}
+	}
+	
+	public void previousQuestion() {
+		if (current_question == questionContainer.size())
+	}
 
 	public void fetchQuestions() {
 		try {
@@ -24,6 +38,7 @@ public class QuestionHandlers {
                         rs.getString("correct_answer")
                     );
             	questionContainer.add(q);
+            	question_id_container.add(q.getQuestionId());
 
             }
 		} catch (Exception e) {
@@ -43,4 +58,10 @@ public class QuestionHandlers {
 	        System.out.println("Option D: " + q.getOptionD());
 		}
 	}
+	
+	public List<Integer> getQuestionIdOrder() {
+		return this.question_id_container;
+	}
+	
+	
 }

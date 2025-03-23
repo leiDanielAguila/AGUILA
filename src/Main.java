@@ -5,6 +5,7 @@ public class Main {
     	QuestionHandlers q = new QuestionHandlers();
 //    	System.out.println("test");
     	q.fetchQuestions();
-    	q.displayQuestions();
+    	//q.displayQuestions();
+    	System.out.println(q.getQuestionIdOrder());
     }
 }

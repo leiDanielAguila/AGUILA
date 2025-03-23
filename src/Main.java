@@ -2,6 +2,7 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
     	StudentHandler s = new StudentHandler();
+    	Student student = new Student();
     	QuestionHandlers q = new QuestionHandlers();
     	Quiz quiz = new Quiz();
     	Scanner in = new Scanner(System.in);
@@ -20,7 +21,8 @@ public class Main {
     				s.makeNewStudent();
     				break;
     			case 2:
-    				System.out.println("Welcome, " + s.authenticateStudent().getFirstName() + "\n");
+    				s.authenticateStudent();
+    				System.out.println("Welcome, " + s.getStudent().getFirstName());
     				done = true;
     				break;
     			case 3:

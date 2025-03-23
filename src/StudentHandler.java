@@ -3,7 +3,8 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class StudentHandler {
-	Scanner in = new Scanner(System.in);	
+	Scanner in = new Scanner(System.in);
+	Student student = new Student();
 	
 	public void makeNewStudent() { // make new student
 		boolean done = false;		
@@ -39,9 +40,9 @@ public class StudentHandler {
 		}
 	}
 	
-	public Student authenticateStudent() { // validate a login attempt
+	public void authenticateStudent() { // validate a login attempt
 		boolean done = false;
-		Student student = new Student();
+		
 		
 		while (!done) {
 			System.out.println("\n\n\n\n--------Log in--------");
@@ -103,7 +104,11 @@ public class StudentHandler {
 	        }
 			
 		}
-		return student;
+		
+	}
+	
+	public Student getStudent() {
+		return this.student;
 	}
 	
 	public int studentIdHandler() {

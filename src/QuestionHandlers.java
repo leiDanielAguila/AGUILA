@@ -53,6 +53,7 @@ public class QuestionHandlers {
 	}
 	
 	public void displayQuestions() {	
+		if (questionContainer.size() == 0) return;
 		Question q = questionContainer.get(current_question);
         System.out.println("\n\nQuestion #" + q.getQuestionId());
         System.out.println("\n" + q.getQuestion());
@@ -64,6 +65,28 @@ public class QuestionHandlers {
 	
 	public List<Integer> getQuestionIdOrder() {
 		return this.question_id_container;
+	}
+	
+	public String getQuestionIdOrderAsString() {
+	    StringBuilder sb = new StringBuilder();
+	    for (int i = 0; i < question_id_container.size(); i++) {
+	        sb.append(question_id_container.get(i));
+
+	        if (i < question_id_container.size() - 1) {
+	            sb.append(",");
+	        }
+	    }
+	    return sb.toString();
+	}
+	
+	public void setQuestionIdOrderFromString(String idString) {
+	    question_id_container.clear(); 
+	    if (idString != null && !idString.isEmpty()) {
+	        String[] idArray = idString.split(",");
+	        for (String id : idArray) {
+	            question_id_container.add(Integer.parseInt(id.trim()));
+	        }
+	    }
 	}
 		
 }

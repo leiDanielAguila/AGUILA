@@ -8,7 +8,7 @@ public class StudentHandler {
 	public void makeNewStudent() { // make new student
 		boolean done = false;		
 		while (!done) {
-			System.out.println("--------Creating an account--------");
+			System.out.println("\n\n\n\n--------Creating an account--------");
 			try {		
 				int studentId = studentIdHandler();
 				String firstName = firstNameHandler();
@@ -27,7 +27,7 @@ public class StudentHandler {
 				ps.setString(3, student.getLastName());
 				ps.setString(4, student.getPassword());
 				ps.executeUpdate();
-				System.out.println("----Account created please login----");
+				System.out.println("\n\n\n\n----Account created please login----");
 				done = true;
 				ps.close();
 				connection.close();
@@ -43,7 +43,7 @@ public class StudentHandler {
 		boolean done = false;
 		
 		while (!done) {
-			System.out.println("--------Log in--------");
+			System.out.println("\n\n\n\n--------Log in--------");
 			System.out.print("Enter your student id: ");
 			int studentId;
 			try {
@@ -82,7 +82,7 @@ public class StudentHandler {
 				ResultSet rs = ps.executeQuery();
 				
 				if (rs.next()) {
-					System.out.println("-----Login successful!-----\n");
+					System.out.println("\n\n\n\n-----Login successful!-----\n");
 					done = true;
 				} else {
 					System.out.println("----Invalid student ID or password. Please try again.----\n");
@@ -122,7 +122,7 @@ public class StudentHandler {
 	        	ResultSet rs = ps.executeQuery();	      
 	            
 	        	if (rs.next() && rs.getInt(1) > 0) {
-	            	System.out.println("------student id exist in the database select another.\n");
+	            	System.out.println("\n\n\n\n------student id exist in the database select another.\n");
 	            } else {
 	                done = true;
 	                studentId = input;

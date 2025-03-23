@@ -11,9 +11,9 @@ public class Main {
     		q.displayQuestions();
     		System.out.println("\n[1] Previous\n[2] Next\n[3] Exit");
     		System.out.print("Enter choice:");
-    		int choice = in.nextInt();
+    		int login_choice = in.nextInt();
     		
-    		switch (choice) {
+    		switch (login_choice) {
     			case 1:
     				q.previousQuestion();
     				break;
@@ -29,6 +29,14 @@ public class Main {
     		System.out.println("\n[1] New Quiz\n[2] Exit\n");
     		System.out.print("Enter choice:");
     		int quiz_choice = in.nextInt();
+    		switch (quiz_choice) {
+    			case 1:
+    				
+    				break;
+    			case 2:
+    				done = true;
+    				break;
+    		}
     		
     		// comment test
     	}

@@ -1,4 +1,3 @@
-import java.sql.*;
 public class Student {
 	private int student_id;
 	private String first_name, last_name, password;

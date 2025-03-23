@@ -82,10 +82,10 @@ public class StudentHandler {
 				ResultSet rs = ps.executeQuery();
 				
 				if (rs.next()) {
-					System.out.println("-----Login successful!-----");
+					System.out.println("-----Login successful!-----\n");
 					done = true;
 				} else {
-					System.out.println("----Invalid student ID or password. Please try again.----");
+					System.out.println("----Invalid student ID or password. Please try again.----\n");
 	            }
 				rs.close();
 	            ps.close();

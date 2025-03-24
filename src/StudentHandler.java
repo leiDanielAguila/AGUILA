@@ -40,20 +40,38 @@ public class StudentHandler {
 		}
 	}
 	
+	
+	
 	public Student authenticateStudent() { // validate a login attempt
-		boolean done = false;		
+		boolean done = false;
+		boolean returnNull = false;
 		while (!done) {
 			System.out.println("\n\n\n\n--------Log in--------");
 			System.out.print("Enter your student id: ");
 			int studentId;
 			try {
+				Class.forName("com.mysql.cj.jdbc.Driver");
+	        	Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/AGUILA", "root", "1234");
 				studentId = in.nextInt();
 				in.nextLine();
+				
+				String checkIdQuery = "SELECT COUNT(*) AS count FROM students WHERE student_id = ?";
+	            PreparedStatement checkIdStmt = connection.prepareStatement(checkIdQuery);
+	            checkIdStmt.setInt(1, studentId);
+	            ResultSet checkIdRs = checkIdStmt.executeQuery();
+	            
+	            if (checkIdRs.next() && checkIdRs.getInt("count") == 0) {
+	                System.out.println("-------Student ID does not exist in the database.\n");
+	                returnNull = true;
+	                done = true;
+	                continue;
+	            }
+				
 				if (studentId <= 0 ) {
 	                System.out.println("-------Student ID must be positive.\n");
 	                continue;
 				}
-			} catch (InputMismatchException e) {
+			} catch (Exception e) {
 				 System.out.println("-------Please enter a valid student id.\n");
 		         in.nextLine(); 
 		         continue;
@@ -83,7 +101,9 @@ public class StudentHandler {
 				
 				if (rs.next()) {
 					String first_name = rs.getString("first_name");
+					String last_name = rs.getString("last_name");
 					student.setFirstName(first_name);
+					student.setLastName(last_name);
 					System.out.println("\n\n\n\n-----Login successful!-----\n");
 					done = true;
 				} else {
@@ -102,7 +122,11 @@ public class StudentHandler {
 	        }
 			
 		}
-		return student;
+		if (returnNull) {
+			return null;
+		} else {
+			return student;
+		}
 	}
 	
 	public Student getStudent() { // for returning authenticated student

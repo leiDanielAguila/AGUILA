@@ -29,28 +29,30 @@ public class Main {
     				done = true;
     				break;
     		}
-
-    		System.out.println("\n\n\n------MENU------");
-    		System.out.println("\n[1] New Quiz\n[2] Exit\n");
-    		System.out.print("Enter choice:");
-    		int quiz_choice = in.nextInt();
-    		switch (quiz_choice) {
-    			case 1:
-    				q.fetchQuestions();
-    				quiz.makeNewQuiz(s.getStudent().getStudentId(), q.getQuestionIdOrderAsString());
-    				done = true;
-    				break;
-    			case 2:
-    				done = true;
-    				break;
-    		}
     		
-    		// comment test
+    		Quiz checkForQuiz = quiz.checkForExistingQuiz(s.getStudent().getStudentId());
+    		
+    		if (checkForQuiz != null) {
+    			System.out.println("\n\n\n------Resuming Quiz------");
+    			
+    		} else {
+    			System.out.println("\n\n\n------MENU------");
+        		System.out.println("\n[1] New Quiz\n[2] Exit\n");
+        		System.out.print("Enter choice:");
+        		int quiz_choice = in.nextInt();
+        		switch (quiz_choice) {
+        			case 1:
+        				q.fetchQuestions();
+        				quiz.makeNewQuiz(s.getStudent().getStudentId(), q.getQuestionIdOrderAsString());
+        				done = true;
+        				break;
+        			case 2:
+        				done = true;
+        				break;
+        		}
+    		}
+  		
     	}
-
-    	
-    	//q.displayQuestions();
-    	//System.out.println(q.getQuestionIdOrder());
     	in.close();
     }
 }

@@ -5,7 +5,7 @@ public class Quiz {
 	private boolean is_done;
 	Question q = new Question();
 	
-	Quiz quiz = new Quiz();
+
 	
 	// Constructors for quiz
 	
@@ -94,51 +94,60 @@ public class Quiz {
 	}
 	
 	
-	public void checkForExistingQuiz(int sid) {
-		boolean meron = false;
+	public Quiz checkForExistingQuiz(int sid) {
+		Quiz quiz = null;
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/AGUILA", "root", "1234");
             String query = "select * from quiz where student_id = ? and is_done = ?";            
             PreparedStatement ps = connection.prepareStatement(query);
-            
-            quiz.setStudentId(sid);
-            quiz.setIsDone(false);
-            int studentId = quiz.getStudentId();
-            boolean isDone = quiz.getIsDone();
-            ps.setInt(1, studentId);
-            ps.setBoolean(2, isDone);
+
+
+            ps.setInt(1, sid);
+            ps.setBoolean(2, false);
             ResultSet rs = ps.executeQuery();
             
             if (rs.next()) {
-            	
-            	System.out.println("\n\n----Resuming Quiz----");            	
-            }
-            
+            	quiz = new Quiz(
+            			rs.getInt("quiz_id"),
+            			rs.getInt("score"),
+            			rs.getBoolean("is_done"),
+            			rs.getString("question_order"),
+            			rs.getInt("student_id")            		
+            			);                  	
+            }            
 		} catch (Exception e) {
 			System.out.println("-------Database connection.");
 		}
-	}
-	
-	public void quizIsDone(int sid,boolean qIsDone) {
-		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/AGUILA", "root", "1234");
-            String query = "select * from quiz where student_id = ? and is_done = ?";            
-            PreparedStatement ps = connection.prepareStatement(query);
-            
-            quiz.setStudentId(sid);
-            quiz.setIsDone(false);
-            int studentId = quiz.getStudentId();
-            boolean isDone = quiz.getIsDone();
-            ps.setInt(1, studentId);
-            ps.setBoolean(2, isDone);
-		} catch (Exception e) {
-			System.out.println("-------Database connection.");
-		}
-	}
-	
-	public Quiz getQuiz() {
 		return quiz;
 	}
+	
+	public void quizIsDone(int sid, boolean qIsDone) {
+	    try {
+	        Class.forName("com.mysql.cj.jdbc.Driver");
+	        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/AGUILA", "root", "1234");
+
+	        String query = "UPDATE quiz SET is_done = ? WHERE student_id = ? AND is_done = false";
+	        PreparedStatement ps = connection.prepareStatement(query);
+
+	        ps.setBoolean(1, qIsDone);
+	        ps.setInt(2, sid);
+
+	        int rowsAffected = ps.executeUpdate();
+	        
+	        if (rowsAffected > 0) {
+	            System.out.println("Quiz marked as " + (qIsDone ? "completed" : "incomplete"));
+	        } else {
+	            System.out.println("No quiz found to update");
+	        }
+	        
+	        ps.close();
+	        connection.close();
+	        
+	    } catch (Exception e) {
+	        System.out.println("-------Database connection error: " + e.getMessage());
+	        e.printStackTrace();
+	    }
+	}
+	
 }

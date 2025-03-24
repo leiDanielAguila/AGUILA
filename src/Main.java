@@ -99,12 +99,13 @@ public class Main {
     	}
     	
     	if (currentQuiz != null) {
-        	System.out.println("Starting Quiz #" + currentQuiz.getQuizId() + " for " + currentStudent.getFirstName());
+        	System.out.println("Starting Quiz Code#" + currentQuiz.getQuizId() + " for " + currentStudent.getFirstName());
     	} 
     	
     	boolean done3 = false;
     	q.getExistingQuiz(currentStudent.getStudentId());
 		q.loadQuestionsFromIds();
+		q.updateCurrentQuestion(currentQuiz.getQuizId());
     	while (!done3) {
     		q.displayQuestions();
     		System.out.println(BLUE + "\n------Navigation Menu------" + RESET);
@@ -121,6 +122,7 @@ public class Main {
     			break;
     		case 3:
     			// answer method
+    			System.out.println(q.getQuestionid());
     			break;
     		case 4:
     			// save the fucking progress boiiii

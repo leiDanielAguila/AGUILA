@@ -37,7 +37,7 @@ public class QuestionHandlers {
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/AGUILA", "root", "1234");
             Statement st = connection.createStatement();
             
-            String query = "select * from question order by rand()";
+            String query = "select distinct * from question order by rand()";
             ResultSet rs = st.executeQuery(query);
             while (rs.next() && count < 10) {
             	Question q = new Question(
@@ -70,6 +70,31 @@ public class QuestionHandlers {
         System.out.println("Option B: " + q.getOptionB());
         System.out.println("Option C: " + q.getOptionC());
         System.out.println("Option D: " + q.getOptionD());
+	}
+	
+	public void updateCurrentQuestion(int quizId) {
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/AGUILA", "root", "1234");            
+            String query = "select last_answered_question from quiz where quiz_id = ?;";
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setInt(1, quizId);
+            
+            ResultSet rs = ps.executeQuery();
+            
+            if (rs.next()) {
+            	current_question = rs.getInt("last_answered_question");
+            }
+            
+		} catch (Exception e) {
+			System.out.println(RED + "-----error" + RESET + e);
+		}
+	}
+	
+	public int getQuestionid() {
+		Question q = questionContainer.get(current_question);
+		int index = questionContainer.indexOf(q);
+		return index;
 	}
 	
 	public List<Integer> getQuestionIdOrder() {
@@ -158,14 +183,20 @@ public class QuestionHandlers {
             			rs.getInt("score"),
             			rs.getBoolean("is_done"),
             			rs.getString("question_order"),
-            			rs.getInt("student_id")            		
+            			rs.getInt("student_id"),
+            			rs.getInt("last_answered_question")
             			);                  	
             }            
 		} catch (Exception e) {
 			System.out.println("-------Database connection.");
 		}
 		
-		setQuestionIdOrderFromString(quiz.getQuestionOrder());
+		if (quiz != null) {
+            setQuestionIdOrderFromString(quiz.getQuestionOrder());
+        } else {
+            System.out.println(RED + "------No existing quiz found for student ID: " + sid + "-----" + RESET);
+            question_id_container.clear();
+        }
 	}
 	
 	public void answerQuestion() {

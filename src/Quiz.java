@@ -1,6 +1,6 @@
 import java.sql.*;
 public class Quiz {
-	private int quiz_id, student_id, score;
+	private int quiz_id, student_id, score, last_answered_question;
 	private String question_order;
 	private boolean is_done;
 	Question q = new Question();
@@ -9,12 +9,13 @@ public class Quiz {
 	
 	// Constructors for quiz
 	
-	public Quiz(int quizId, int s, boolean is_done,String questionOrder, int studentId) {
+	public Quiz(int quizId, int s, boolean is_done,String questionOrder, int studentId, int laq) {
 		this.quiz_id = quizId;
 		this.score = s;
 		this.is_done = is_done;
 		this.question_order = questionOrder;
 		this.student_id = studentId;
+		this.last_answered_question =laq;
 	}
 	
 	public Quiz() {
@@ -23,6 +24,15 @@ public class Quiz {
 		this.is_done = false;
 		this.question_order = "";
 		this.student_id = 0;
+		this.last_answered_question = 0;
+	}
+	
+	public void setLastQuestionAnswered(int laq) {
+		this.last_answered_question = laq;
+	}
+	
+	public int getLastQuestionAnswered() {
+		return this.last_answered_question;
 	}
 	
 	public void setQuizScore(int s) {
@@ -70,7 +80,7 @@ public class Quiz {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/AGUILA", "root", "1234");
-            String query = "insert into quiz (score, is_done, question_order, student_id) values (?,?,?,?)";
+            String query = "insert into quiz (score, is_done, question_order, student_id, last_answered_question) values (?,?,?,?,?)";
             PreparedStatement ps = connection.prepareStatement(query);
             
             Quiz quiz1 = new Quiz();
@@ -79,11 +89,13 @@ public class Quiz {
             quiz1.setIsDone(false);
             quiz1.setQuestionOrder(qo);
             quiz1.setStudentId(sid);
+            quiz1.setLastQuestionAnswered(0);
             
             ps.setInt(1, quiz1.getQuizScore());
             ps.setBoolean(2, quiz1.getIsDone());
             ps.setString(3, quiz1.getQuestionOrder());
             ps.setInt(4, quiz1.getStudentId());
+            ps.setInt(5, quiz1.getLastQuestionAnswered());
             ps.executeUpdate();
 			ps.close();
 			connection.close();
@@ -112,11 +124,12 @@ public class Quiz {
             			rs.getInt("score"),
             			rs.getBoolean("is_done"),
             			rs.getString("question_order"),
-            			rs.getInt("student_id")            		
+            			rs.getInt("student_id"),
+            			rs.getInt("last_answered_question")
             			);                  	
             }            
 		} catch (Exception e) {
-			System.out.println("-------Database connection error.");
+			System.out.println("this-------Database connection error." + e);
 		}
 		return quiz;
 	}

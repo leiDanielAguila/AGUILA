@@ -5,6 +5,8 @@ public class Quiz {
 	private boolean is_done;
 	Question q = new Question();
 	
+	Quiz quiz = new Quiz();
+	
 	// Constructors for quiz
 	
 	public Quiz(int quizId, int s, boolean is_done,String questionOrder, int studentId) {
@@ -71,17 +73,17 @@ public class Quiz {
             String query = "insert into quiz (score, is_done, question_order, student_id) values (?,?,?,?)";
             PreparedStatement ps = connection.prepareStatement(query);
             
-            Quiz quiz = new Quiz();
+            Quiz quiz1 = new Quiz();
             
-            quiz.setQuizScore(0);
-            quiz.setIsDone(false);
-            quiz.setQuestionOrder(qo);
-            quiz.setStudentId(sid);
+            quiz1.setQuizScore(0);
+            quiz1.setIsDone(false);
+            quiz1.setQuestionOrder(qo);
+            quiz1.setStudentId(sid);
             
-            ps.setInt(1, quiz.getQuizScore());
-            ps.setBoolean(2, quiz.getIsDone());
-            ps.setString(3, quiz.getQuestionOrder());
-            ps.setInt(4, quiz.getStudentId());
+            ps.setInt(1, quiz1.getQuizScore());
+            ps.setBoolean(2, quiz1.getIsDone());
+            ps.setString(3, quiz1.getQuestionOrder());
+            ps.setInt(4, quiz1.getStudentId());
             ps.executeUpdate();
             System.out.println("----New Quiz Created----");
 			ps.close();
@@ -91,13 +93,52 @@ public class Quiz {
 		}
 	}
 	
+	
 	public void checkForExistingQuiz(int sid) {
+		boolean meron = false;
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/AGUILA", "root", "1234");
+            String query = "select * from quiz where student_id = ? and is_done = ?";            
+            PreparedStatement ps = connection.prepareStatement(query);
+            
+            quiz.setStudentId(sid);
+            quiz.setIsDone(false);
+            int studentId = quiz.getStudentId();
+            boolean isDone = quiz.getIsDone();
+            ps.setInt(1, studentId);
+            ps.setBoolean(2, isDone);
+            ResultSet rs = ps.executeQuery();
+            
+            if (rs.next()) {
+            	
+            	System.out.println("\n\n----Resuming Quiz----");            	
+            }
             
 		} catch (Exception e) {
 			System.out.println("-------Database connection.");
 		}
+	}
+	
+	public void quizIsDone(int sid,boolean qIsDone) {
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/AGUILA", "root", "1234");
+            String query = "select * from quiz where student_id = ? and is_done = ?";            
+            PreparedStatement ps = connection.prepareStatement(query);
+            
+            quiz.setStudentId(sid);
+            quiz.setIsDone(false);
+            int studentId = quiz.getStudentId();
+            boolean isDone = quiz.getIsDone();
+            ps.setInt(1, studentId);
+            ps.setBoolean(2, isDone);
+		} catch (Exception e) {
+			System.out.println("-------Database connection.");
+		}
+	}
+	
+	public Quiz getQuiz() {
+		return quiz;
 	}
 }

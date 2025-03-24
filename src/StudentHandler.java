@@ -40,10 +40,8 @@ public class StudentHandler {
 		}
 	}
 	
-	public void authenticateStudent() { // validate a login attempt
-		boolean done = false;
-		
-		
+	public Student authenticateStudent() { // validate a login attempt
+		boolean done = false;		
 		while (!done) {
 			System.out.println("\n\n\n\n--------Log in--------");
 			System.out.print("Enter your student id: ");
@@ -104,7 +102,7 @@ public class StudentHandler {
 	        }
 			
 		}
-		
+		return student;
 	}
 	
 	public Student getStudent() { // for returning authenticated student

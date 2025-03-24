@@ -85,7 +85,6 @@ public class Quiz {
             ps.setString(3, quiz1.getQuestionOrder());
             ps.setInt(4, quiz1.getStudentId());
             ps.executeUpdate();
-            System.out.println("----New Quiz Created----");
 			ps.close();
 			connection.close();
 		} catch (Exception e) {
@@ -117,9 +116,25 @@ public class Quiz {
             			);                  	
             }            
 		} catch (Exception e) {
-			System.out.println("-------Database connection.");
+			System.out.println("-------Database connection error.");
 		}
 		return quiz;
+	}
+	
+	public void deleteQuiz(int sid) {
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/AGUILA", "root", "1234");
+            String query = "delete from quiz where student_id = ?";            
+            PreparedStatement ps = connection.prepareStatement(query);
+
+
+            ps.setInt(1, sid);
+            ps.executeUpdate();
+              
+		} catch (Exception e) {
+			System.out.println("-------Database connection error.");
+		}
 	}
 	
 	public void quizIsDone(int sid, boolean qIsDone) {

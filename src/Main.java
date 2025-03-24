@@ -1,83 +1,92 @@
 import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
-    	StudentHandler s = new StudentHandler();
-    	Student student = new Student();
+    	StudentHandler sh = new StudentHandler();
+    	Scanner in = new Scanner(System.in);
     	QuestionHandlers q = new QuestionHandlers();
     	Quiz quiz = new Quiz();
-    	Scanner in = new Scanner(System.in);
-    	boolean done = false;
-
+    	boolean done = false; 
+    	Student currentStudent = null;
+    	
     	while (!done) {
+    		System.out.println("------------IT QUIZ");
+    		System.out.println("[1] Sign-up\n[2] Log-in\n[3] Exit");
+    		System.out.print("Enter your choice: ");
+    		int choice = in.nextInt();
     		
- 
-    		System.out.println("------QUIZ------");
-    		System.out.println("\n[1] sign up\n[2] login\n[3] Exit");
-    		System.out.print("Enter choice:");
-    		int login_choice = in.nextInt();
-    		
-    		switch (login_choice) {
-    			case 1:
-    				s.makeNewStudent();
-    				break;
-    			case 2:
-    				s.authenticateStudent();
-    				System.out.println("Welcome, " + s.getStudent().getFirstName());
-    				done = true;
-    				break;
-    			case 3:
-    				done = true;
-    				break;
+    		switch(choice) {
+    		case 1:
+    			sh.makeNewStudent();
+    			break;
+    		case 2:
+    			currentStudent = sh.authenticateStudent();
+    			done = true;
+    			break;
+    		case 3:
+    			done = true;
+    			break;
     		}
+    	}   
+    	
+    	boolean done1 = false;
+    	
+    	System.out.println("Welcome, "+currentStudent.getFirstName());
+    	
+    	
+    	while (!done1) {
+    		Quiz checkForQuiz = quiz.checkForExistingQuiz(currentStudent.getStudentId());
     		
-    		Quiz checkForQuiz = quiz.checkForExistingQuiz(s.getStudent().getStudentId());
+    		System.out.println("\n-------Dashboard-------");
+    		System.out.println("[1] New Quiz\n[2] Continue Quiz\n[3] Exit");
+    		System.out.println("Enter choice: ");
+    		int choice = in.nextInt();
     		
-    		if (checkForQuiz != null) {
-    			boolean quizDone = false;
-    			System.out.println("\n\n\n------Resuming Quiz------");
-    			q.getExistingQuiz(checkForQuiz.getStudentId());
-    			q.loadQuestionsFromIds();
-    			while (!quizDone) {
-    				q.displayQuestions();
-        			System.out.println("\n------Navigation Menu------");
-            		System.out.println("\n[1] Previous Question\n[2] Next Question\n[3] Exit\n");
-            		System.out.print("Enter choice:");
-        			int nav_choice = in.nextInt();
-        			
-        			switch (nav_choice) {
-        			case 1:
-        				q.previousQuestion();
-        				quizDone = false;
-        				break;
-        			case 2:
-        				q.nextQuestion();
-        				quizDone = false;
-        				break;
-        			case 3:
-        				System.out.println("Exited quiz. ---Progress saved.");
-        				quizDone = true;
-        				break;
-        			}
+    		switch (choice) {
+    		case 1:
+    			if (checkForQuiz != null) {
+    				System.out.println("-----You have an existing quiz, do you want to delete quiz?");
+    	    		System.out.println("[1] Yes\n[2] No\n");
+    	    		System.out.println("Enter choice: ");
+    	    		int choice1 = in.nextInt();
+    	    		switch (choice1) {
+    	    		case 1:
+    	    			quiz.deleteQuiz(currentStudent.getStudentId());
+    	    			System.out.println("-------Quiz Deleted!");
+    	    			q.fetchQuestions();
+        				quiz.makeNewQuiz(currentStudent.getStudentId(), q.getQuestionIdOrderAsString());
+        				System.out.println("-------New quiz created!");
+    	    			done1 = true;
+    	    			break;
+    	    		case 2:
+    	    			done1 = false;
+    	    			break;
+    	    		}
+    			} else {
+    				q.fetchQuestions();
+    				quiz.makeNewQuiz(currentStudent.getStudentId(), q.getQuestionIdOrderAsString());
+    				System.out.println("-------New quiz created!");
+    				done1 = true;
     			}
-    			
-    		} else {
-    			System.out.println("\n\n\n------MENU------");
-        		System.out.println("\n[1] New Quiz\n[2] Exit\n");
-        		System.out.print("Enter choice:");
-        		int quiz_choice = in.nextInt();
-        		switch (quiz_choice) {
-        			case 1:
-        				q.fetchQuestions();
-        				quiz.makeNewQuiz(s.getStudent().getStudentId(), q.getQuestionIdOrderAsString());
-        				done = true;
-        				break;
-        			case 2:
-        				done = true;
-        				break;
-        		}
+    			break;
+    		case 2:
+    			if (checkForQuiz != null) {
+    				System.out.println("-------Continue Quiz");
+    				done1 = true;
+    			} else {
+    				System.out.println("-------No existing Quiz, start a new one.");
+    				done1 = false;
+    			}
+    			break;
+    		case 3:
+    			System.out.println("-------Program exit done!");
+    			done1 = true;
+    			break;
     		}
-  		
+    		
+    		
     	}
+    	
+    	
     	in.close();
     }
 }

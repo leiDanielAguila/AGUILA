@@ -23,6 +23,47 @@ public class Quiz {
 		this.student_id = 0;
 	}
 	
+	public void setQuizScore(int s) {
+		this.score = s;
+	}
+	
+	public int getQuizScore() {
+		return this.score;
+	}
+	
+	public void setQuizId(int qid) {
+		this.quiz_id = qid;
+	}
+	
+	public int getQuizId() {
+		return this.quiz_id;
+	}
+	
+	public void setStudentId(int sid) {
+		this.student_id = sid;
+	}
+
+	public int getStudentId() {
+		return this.student_id;
+	}
+	
+	public void setIsDone(boolean is_done) {
+		this.is_done = is_done;
+	}
+	
+	public boolean getIsDone() {
+		return this.is_done;
+	}
+	
+	public void setQuestionOrder(String qo) {
+		this.question_order = qo;
+	}
+	
+	public String getQuestionOrder() {
+		return this.question_order;
+	}
+	
+	
 	public void makeNewQuiz(int sid, String qo) { // sid = student id, qo = question order
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
@@ -30,14 +71,31 @@ public class Quiz {
             String query = "insert into quiz (score, is_done, question_order, student_id) values (?,?,?,?)";
             PreparedStatement ps = connection.prepareStatement(query);
             
-            ps.setInt(1, 0);
-            ps.setBoolean(2, false);
-            ps.setString(3, qo);
-            ps.setInt(4, sid);
+            Quiz quiz = new Quiz();
+            
+            quiz.setQuizScore(0);
+            quiz.setIsDone(false);
+            quiz.setQuestionOrder(qo);
+            quiz.setStudentId(sid);
+            
+            ps.setInt(1, quiz.getQuizScore());
+            ps.setBoolean(2, quiz.getIsDone());
+            ps.setString(3, quiz.getQuestionOrder());
+            ps.setInt(4, quiz.getStudentId());
             ps.executeUpdate();
             System.out.println("----New Quiz Created----");
 			ps.close();
 			connection.close();
+		} catch (Exception e) {
+			System.out.println("-------Database connection.");
+		}
+	}
+	
+	public void checkForExistingQuiz(int sid) {
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/AGUILA", "root", "1234");
+            
 		} catch (Exception e) {
 			System.out.println("-------Database connection.");
 		}

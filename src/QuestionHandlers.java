@@ -9,12 +9,16 @@ public class QuestionHandlers {
 	private List<Question> questionContainer = new ArrayList<Question>();
 	private List<Integer> question_id_container = new ArrayList<Integer>();
 	private int current_question = 0;
+    public static final String RED = "\033[0;31m";     // RED
+    public static final String GREEN = "\033[0;32m";   // GREEN
+    public static final String BLUE = "\033[1;36m";    // BLUE
+    public static final String RESET = "\033[0m";  // Text Reset
 	
 	public void nextQuestion() {
 		if (current_question < questionContainer.size() - 1) {
 			current_question++;	
 		} else {
-			System.out.println("-------this is the last question.");
+			System.out.println(RED + "------------------this is the last question." + RESET);
 		}
 	}
 	
@@ -22,7 +26,7 @@ public class QuestionHandlers {
 		if (current_question > 0) {
 			current_question-=1;
 		} else {
-			System.out.println("-------this is the first question.");
+			System.out.println(RED + "------------------this is the first question." + RESET);
 		}	
 	}
 
@@ -60,7 +64,7 @@ public class QuestionHandlers {
 		
 		Question q = questionContainer.get(current_question);
 		System.out.println("\n\nNo. " + (current_question + 1 )+ "/" + questionContainer.size());
-        System.out.println("\nQuestion #" + q.getQuestionId());
+        System.out.println(BLUE + "\nQuestion #" + q.getQuestionId() + RESET);
         System.out.println("\n" + q.getQuestion());
         System.out.println("Option A: " + q.getOptionA());
         System.out.println("Option B: " + q.getOptionB());
@@ -164,6 +168,8 @@ public class QuestionHandlers {
 		setQuestionIdOrderFromString(quiz.getQuestionOrder());
 	}
 	
-
+	public void answerQuestion() {
+		
+	}
 		
 }

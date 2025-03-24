@@ -6,7 +6,10 @@ public class Question {
 	private int question_id, current_question = 0;
 	private String question, option_a, option_b, option_c, option_d, correct_answer;
 	private List<Question> questionList = new ArrayList<>();
-	
+    public static final String RED = "\033[0;31m";     // RED
+    public static final String GREEN = "\033[0;32m";   // GREEN
+    public static final String BLUE = "\033[1;36m";    // BLUE
+    public static final String RESET = "\033[0m";  // Text Reset
 	// Constructors 
 	
 	public Question(int qid, String q, String oa, String ob, String oc, String od, String ca) {

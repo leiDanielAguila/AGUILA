@@ -5,7 +5,10 @@ import java.util.Scanner;
 public class StudentHandler {
 	Scanner in = new Scanner(System.in);
 	Student student = new Student();
-	
+    public static final String RED = "\033[0;31m";     // RED
+    public static final String GREEN = "\033[0;32m";   // GREEN
+    public static final String BLUE = "\033[1;36m";    // BLUE
+    public static final String RESET = "\033[0m";  // Text Reset
 	public void makeNewStudent() { // make new student
 		boolean done = false;		
 		while (!done) {
@@ -28,7 +31,7 @@ public class StudentHandler {
 				ps.setString(3, student.getLastName());
 				ps.setString(4, student.getPassword());
 				ps.executeUpdate();
-				System.out.println("\n\n\n\n----Account created please login----");
+				System.out.println(GREEN + "\n\n\n\n----Account created please login----" + RESET);
 				done = true;
 				ps.close();
 				connection.close();
@@ -46,7 +49,7 @@ public class StudentHandler {
 		boolean done = false;
 		boolean returnNull = false;
 		while (!done) {
-			System.out.println("\n\n\n\n--------Log in--------");
+			System.out.println(BLUE + "\n\n\n\n--------Log in--------" + RESET);
 			System.out.print("Enter your student id: ");
 			int studentId;
 			try {
@@ -61,14 +64,14 @@ public class StudentHandler {
 	            ResultSet checkIdRs = checkIdStmt.executeQuery();
 	            
 	            if (checkIdRs.next() && checkIdRs.getInt("count") == 0) {
-	                System.out.println("-------Student ID does not exist in the database.\n");
+	                System.out.println(RED + "-------Student ID does not exist in the database.\n" + RESET);
 	                returnNull = true;
 	                done = true;
 	                continue;
 	            }
 				
 				if (studentId <= 0 ) {
-	                System.out.println("-------Student ID must be positive.\n");
+	                System.out.println(RED + "-------Student ID must be positive.\n" + RESET);
 	                continue;
 				}
 			} catch (Exception e) {
@@ -81,7 +84,7 @@ public class StudentHandler {
 			password = in.nextLine();
 			
 			if (password.trim().isEmpty()) {
-				System.out.println("-------Student password must not be empty.\n");
+				System.out.println(RED + "-------Student password must not be empty.\n" + RESET);
 				continue;
 			}
 			
@@ -104,10 +107,10 @@ public class StudentHandler {
 					String last_name = rs.getString("last_name");
 					student.setFirstName(first_name);
 					student.setLastName(last_name);
-					System.out.println("\n\n\n\n-----Login successful!-----\n");
+					System.out.println(GREEN + "\n\n\n\n-----Login successful!-----\n" + RESET);
 					done = true;
 				} else {
-					System.out.println("----Invalid student ID or password. Please try again.----\n");
+					System.out.println(RED + "----Invalid student ID or password. Please try again.----\n" + RESET);
 	            }
 				rs.close();
 	            ps.close();
@@ -142,7 +145,7 @@ public class StudentHandler {
 	        	int input = in.nextInt();
 	        	in.nextLine();	        	
 	        	if (input <= 0) {
-	                System.out.println("-------student id can not be less than 1. \n");
+	                System.out.println(RED + "-------student id can not be less than 1. \n" + RESET);
 	                continue;
 	            }	        	
 	        	Class.forName("com.mysql.cj.jdbc.Driver");
@@ -153,7 +156,7 @@ public class StudentHandler {
 	        	ResultSet rs = ps.executeQuery();	      
 	            
 	        	if (rs.next() && rs.getInt(1) > 0) {
-	            	System.out.println("\n\n\n\n------student id exist in the database select another.\n");
+	            	System.out.println(RED + "\n\n\n\n------student id exist in the database select another.\n" + RESET);
 	            } else {
 	                done = true;
 	                studentId = input;
@@ -180,7 +183,7 @@ public class StudentHandler {
 			try {
 				String input = in.nextLine();
 				if (input.trim().isEmpty()) {
-					System.out.println("-------first name can not be empty.\n");
+					System.out.println(RED + "-------first name can not be empty.\n" + RESET);
 					done = false;
 				} else {
 					firstName = input.toLowerCase();
@@ -202,7 +205,7 @@ public class StudentHandler {
 			try {
 				String input = in.nextLine();
 				if (input.trim().isEmpty()) {
-					System.out.println("-------last name can not be empty.\\n");
+					System.out.println(RED + "-------last name can not be empty.\\n" + RESET);
 					done = false;
 				} else {
 					lastName = input.toLowerCase();
@@ -224,7 +227,7 @@ public class StudentHandler {
 			try {
 				String input = in.nextLine();
 				if (input.trim().isEmpty()) {
-					System.out.println("-------password can not be empty.\n");
+					System.out.println(RED + "-------password can not be empty.\n" + RESET);
 					done = false;
 				} else {
 					password = input.toLowerCase();

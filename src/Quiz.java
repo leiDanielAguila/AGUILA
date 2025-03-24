@@ -127,7 +127,11 @@ public class Quiz {
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/AGUILA", "root", "1234");
             String query = "delete from quiz where student_id = ?";            
             PreparedStatement ps = connection.prepareStatement(query);
-
+            	
+//            String progressQuery = "DELETE FROM quiz_progress WHERE quiz_id IN (SELECT quiz_id FROM quiz WHERE student_id = ?)";
+//            PreparedStatement ps2 = connection.prepareStatement(progressQuery);
+//            ps2.setInt(1, sid);
+//            ps2.executeUpdate();
 
             ps.setInt(1, sid);
             ps.executeUpdate();

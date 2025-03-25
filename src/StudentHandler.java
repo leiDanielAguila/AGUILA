@@ -9,7 +9,6 @@ public class StudentHandler {
     public static final String GREEN = "\033[0;32m";   // GREEN
     public static final String BLUE = "\033[1;36m";    // BLUE
     public static final String RESET = "\033[0m";  // Text Reset
-    
 	public void makeNewStudent() { // make new student
 		boolean done = false;		
 		while (!done) {

@@ -110,7 +110,7 @@ public class Main {
     		q.displayQuestions();
     		System.out.println(BLUE + "\n------Navigation Menu------" + RESET);
     		System.out.println("\n[1] Previous Question\n[2] Next Question\n[3] Answer Question\n[4] Exit\n");
-    		System.out.print("Enter choice:");
+    		System.out.print(GREEN + "Enter Navigation choice:" + RESET);
     		int choice = in.nextInt();
     		in.nextLine();
     		switch (choice) {
@@ -122,13 +122,20 @@ public class Main {
     			break;
     		case 3:
     			// answer method
-    			System.out.print(BLUE + "Enter your answer: " + RESET);
-    			String userAnswer = in.nextLine();
-    			if (userAnswer.trim().isEmpty()) {
-    				System.out.println(RED + "answer can not be empty." + RESET);
+    			boolean quizAnswered = q.checkIfQuestionAnswered(currentQuiz.getQuizId());
+    			
+    			if (quizAnswered) {
+    				System.out.print(RED + "-----Question is already answered." + RESET);
     				done3 = false;
     			} else {
-    				q.answerQuestion(currentQuiz.getQuizId(), userAnswer.toUpperCase());
+    				System.out.print(BLUE + "-----Enter your answer: " + RESET);
+        			String userAnswer = in.nextLine();
+        			if (userAnswer.trim().isEmpty()) {
+        				System.out.println(RED + "answer can not be empty." + RESET);
+        				done3 = false;
+        			} else {
+        				q.answerQuestion(currentQuiz.getQuizId(), userAnswer.toUpperCase());
+        			}
     			}
     			
     			break;

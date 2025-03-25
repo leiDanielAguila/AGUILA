@@ -83,12 +83,36 @@ public class QuestionHandlers {
             ResultSet rs = ps.executeQuery();
             
             if (rs.next()) {
-            	current_question = rs.getInt("last_answered_question");
+            	current_question = rs.getInt("last_answered_question");     
             }
             
 		} catch (Exception e) {
 			System.out.println(RED + "-----error in updating current question" + RESET + e);
 		}
+	}
+	
+	public boolean checkIfQuestionAnswered (int quizId) {
+		boolean isAnswered = false;
+		try {			
+        	Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/AGUILA", "root", "1234");
+        	Question q = questionContainer.get(current_question);
+        	QuizProgress qp = new QuizProgress();
+        	String query = "select * from quiz_progress where quiz_id = ? and question_id = ?";        	        	        	
+        	PreparedStatement ps = connection.prepareStatement(query);
+        	ps.setInt(1, quizId);
+        	ps.setInt(2, q.getQuestionId());
+        	ResultSet rs = ps.executeQuery();
+        	        	        	
+        	if (rs.next()) {
+        		isAnswered = true;
+        	}
+        	rs.close();
+        	connection.close();
+        	ps.close();
+		} catch (Exception e) {
+			System.out.println(RED + "-----error in check question answer" + RESET + e);
+		}
+		return isAnswered;
 	}
 	
 	public void answerQuestion(int quizId, String userAnswer) {
@@ -99,9 +123,9 @@ public class QuestionHandlers {
         	QuizProgress qp = new QuizProgress();
         	
         	qp.setQuizId(quizId);
-        	qp.setUserAnswer(userAnswer);
-        	if (userAnswer == q.getCorrectAnswer()) {
-        		qp.setIsCorrect(true);
+        	qp.setUserAnswer(userAnswer);        	
+        	if (userAnswer.equals(questionContainer.get(current_question).getCorrectAnswer())) {
+        		qp.setIsCorrect(true); // check for later because all is_correct is false in db
         	}
         	qp.setQuestionId(q.getQuestionId());
         	String query1 = "insert into quiz_progress (quiz_id,question_id,user_answer,is_correct) values (?,?,?,?)";

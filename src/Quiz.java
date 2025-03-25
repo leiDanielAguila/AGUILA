@@ -4,7 +4,10 @@ public class Quiz {
 	private String question_order;
 	private boolean is_done;
 	Question q = new Question();
-	
+    public static final String RED = "\033[0;31m";     // RED
+    public static final String GREEN = "\033[0;32m";   // GREEN
+    public static final String BLUE = "\033[1;36m";    // BLUE
+    public static final String RESET = "\033[0m";  // Text Reset
 
 	
 	// Constructors for quiz
@@ -154,24 +157,21 @@ public class Quiz {
 		}
 	}
 	
-	public void quizIsDone(int sid, boolean qIsDone) {
+	public void quizIsDone(int sid) {
 	    try {
 	        Class.forName("com.mysql.cj.jdbc.Driver");
 	        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/AGUILA", "root", "1234");
 
-	        String query = "UPDATE quiz SET is_done = ? WHERE student_id = ? AND is_done = false";
+	        String query = "UPDATE quiz SET is_done = true WHERE student_id = ? AND is_done = false";
 	        PreparedStatement ps = connection.prepareStatement(query);
 
-	        ps.setBoolean(1, qIsDone);
-	        ps.setInt(2, sid);
+	        ps.setInt(1, sid);
 
 	        int rowsAffected = ps.executeUpdate();
 	        
 	        if (rowsAffected > 0) {
-	            System.out.println("Quiz marked as " + (qIsDone ? "completed" : "incomplete"));
-	        } else {
-	            System.out.println("No quiz found to update");
-	        }
+	            System.out.println(GREEN + "Quiz marked as completed" + RESET);
+	        } 
 	        
 	        ps.close();
 	        connection.close();
@@ -181,7 +181,42 @@ public class Quiz {
 	        e.printStackTrace();
 	    }
 	}
+		
+	public void submitQuiz(int studentId, int quizId, int score) {
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/AGUILA", "root", "1234");
+            String query = "UPDATE quiz SET is_done = TRUE, score = ? WHERE student_id = ? AND quiz_id = ?";            
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setInt(1, score);
+            ps.setInt(2, studentId);
+            ps.setInt(3, quizId);
+            ps.executeUpdate();     
+            System.out.println(GREEN + "---QUIZ SUBMITTED!---" + RESET);
+		} catch (Exception e) {
+			System.out.println(RED + "-----error in submit quiz" + RESET + e);
+		}
+	}
 	
-	
-	
+	public int getScore(int quizId) {
+		int score = 0;
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/AGUILA", "root", "1234");
+            String query = "SELECT COUNT(*) as correct_answers FROM quiz_progress WHERE is_correct = TRUE AND quiz_id = ?"; 
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setInt(1, quizId);
+            ResultSet rs = ps.executeQuery();
+            
+            if (rs.next()) {
+            	score = rs.getInt("correct_answers");
+            }
+            rs.close();
+            connection.close();
+            ps.close();
+		} catch (Exception e) {
+			System.out.println(RED + "-----error in get score" + RESET + e);
+		}
+		return score;
+	}
 }

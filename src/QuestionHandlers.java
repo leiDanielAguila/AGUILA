@@ -8,6 +8,7 @@ public class QuestionHandlers {
 	Question question = new Question();
 	private List<Question> questionContainer = new ArrayList<Question>();
 	private List<Integer> question_id_container = new ArrayList<Integer>();
+	private List<Integer> answeredQuestions = new ArrayList<Integer>();
 	private int current_question = 0;
     public static final String RED = "\033[0;31m";     // RED
     public static final String GREEN = "\033[0;32m";   // GREEN
@@ -63,8 +64,7 @@ public class QuestionHandlers {
 		if (questionContainer.size() == 0) return;
 		
 		Question q = questionContainer.get(current_question);
-		System.out.println("\n\nNo. " + (current_question + 1 )+ "/" + questionContainer.size());
-        System.out.println(BLUE + "\nQuestion #" + q.getQuestionId() + RESET);
+		System.out.println(BLUE + "\nQuestion #" + + (current_question + 1 )+ "/" + questionContainer.size() + RESET);   
         System.out.println("\n" + q.getQuestion());
         System.out.println("Option A: " + q.getOptionA());
         System.out.println("Option B: " + q.getOptionB());
@@ -81,11 +81,15 @@ public class QuestionHandlers {
             ps.setInt(1, quizId);
             
             ResultSet rs = ps.executeQuery();
-            
+            boolean isAnswered = checkIfQuestionAnswered(quizId);
             if (rs.next()) {
-            	current_question = rs.getInt("last_answered_question");     
-            }
-            
+            	if (isAnswered) {
+            		current_question = rs.getInt("last_answered_question");
+            		nextQuestion();
+            	} else {
+            		current_question = rs.getInt("last_answered_question");
+            	}
+            }            
 		} catch (Exception e) {
 			System.out.println(RED + "-----error in updating current question" + RESET + e);
 		}
@@ -96,7 +100,6 @@ public class QuestionHandlers {
 		try {			
         	Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/AGUILA", "root", "1234");
         	Question q = questionContainer.get(current_question);
-        	QuizProgress qp = new QuizProgress();
         	String query = "select * from quiz_progress where quiz_id = ? and question_id = ?";        	        	        	
         	PreparedStatement ps = connection.prepareStatement(query);
         	ps.setInt(1, quizId);
@@ -115,6 +118,48 @@ public class QuestionHandlers {
 		return isAnswered;
 	}
 	
+	public void storeAnsweredQuestions(int quizId) {
+	    try {
+	        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/AGUILA", "root", "1234");
+	        String query = "SELECT question_id FROM quiz_progress WHERE quiz_id = ? AND user_answer IS NOT NULL";
+	        PreparedStatement ps = connection.prepareStatement(query);
+	        ps.setInt(1, quizId);
+	        ResultSet rs = ps.executeQuery();	        
+	        answeredQuestions.clear(); 	        
+	        while (rs.next()) {
+	            int questionId = rs.getInt("question_id");
+	            int index = -1; 
+	            for (int i = 0; i < questionContainer.size(); i++) {
+	                if (questionContainer.get(i).getQuestionId() == questionId) {
+	                    index = i;
+	                    break;
+	                }
+	            }
+	            if (index != -1) {
+	                answeredQuestions.add(index+1);
+	            }
+	        }
+	        rs.close();
+	        ps.close();
+	        connection.close();
+	        
+	    } catch (Exception e) {
+	        System.out.println(RED + "-----error in display answered line 120 in QH" + RESET + e);
+	    }
+	}
+
+	
+	public void displayAnsweredQuestions() {
+	    System.out.println(BLUE + "Answered Questions: " + RESET);
+	    
+	    if (answeredQuestions.isEmpty()) {
+	        System.out.println("No questions have been answered yet.");
+	    } else {
+	        System.out.println(String.join(", ", answeredQuestions.stream().map(String::valueOf).toArray(String[]::new)));
+	    }
+	}
+	
+	
 	public void answerQuestion(int quizId, String userAnswer) {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
@@ -125,7 +170,7 @@ public class QuestionHandlers {
         	qp.setQuizId(quizId);
         	qp.setUserAnswer(userAnswer);        	
         	if (userAnswer.equals(questionContainer.get(current_question).getCorrectAnswer())) {
-        		qp.setIsCorrect(true); // check for later because all is_correct is false in db
+        		qp.setIsCorrect(true); 
         	}
         	qp.setQuestionId(q.getQuestionId());
         	String query1 = "insert into quiz_progress (quiz_id,question_id,user_answer,is_correct) values (?,?,?,?)";
@@ -136,19 +181,25 @@ public class QuestionHandlers {
         	ps.setString(3, qp.getUserAnswer());
         	ps.setBoolean(4, qp.getIsCorrect());
         	ps.executeUpdate();
-        	System.out.println(GREEN + "\nQuestion #" +q.getQuestionId() + " answered." + RESET);
-        	nextQuestion();
+        	System.out.println(BLUE + "-----------------------------------------------------" + RESET);
+        	System.out.println(GREEN + "\nQuestion answered!." + RESET);
+        	if (current_question != 9) {
+        		nextQuestion();
+        	}
         	String query2 = "update quiz set last_answered_question = ? where quiz_id = ?";
         	PreparedStatement ps1 = connection.prepareStatement(query2);
         	int index = questionContainer.indexOf(q);
-        	ps1.setInt(1, index);
+        	ps1.setInt(1, index); // error
         	ps1.setInt(2, quizId);
+        	ps1.executeUpdate();
 			ps.close();
 			connection.close();
 		} catch (Exception e) {
 			System.out.println(RED + "-----error in answer question" + RESET + e);
 		}
 	}
+	
+	
 	
 //	public void displayUnansweredQuestions(int quizId) {
 //		try {
@@ -160,11 +211,19 @@ public class QuestionHandlers {
 //		}
 //	}
 	
-	public void populateQuizProgress(int quizId) {
-		
+	public int getContainerCount() {
+		if (questionContainer.size() == 0) {System.out.println("Empty.");};
+		int q = questionContainer.size();
+		return q;
 	}
 	
-	public int getQuestionid() {
+	public int getAnsweredCount() {
+		if (answeredQuestions.size() == 0) {System.out.println("Empty.");};
+		int q = answeredQuestions.size();
+		return q;
+	}
+	
+	public int getQuestionNumber() {
 		Question q = questionContainer.get(current_question);
 		int index = questionContainer.indexOf(q);
 		return index;

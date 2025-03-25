@@ -107,11 +107,23 @@ public class Main {
 		q.loadQuestionsFromIds();
 		q.updateCurrentQuestion(currentQuiz.getQuizId());
     	while (!done3) {
+    		if (q.getQuestionNumber() == q.getContainerCount()) {
+    			System.out.println(RED + "------------------this is the last question." + RESET);
+    		}
+    		q.storeAnsweredQuestions(currentQuiz.getQuizId());
+    		q.displayAnsweredQuestions();
     		q.displayQuestions();
     		System.out.println(BLUE + "\n------Navigation Menu------" + RESET);
-    		System.out.println("\n[1] Previous Question\n[2] Next Question\n[3] Answer Question\n[4] Exit\n");
-    		System.out.print(GREEN + "Enter Navigation choice:" + RESET);
-    		int choice = in.nextInt();
+    		System.out.println("\n[1] Previous Question\n[2] Next Question\n[3] Answer Question\n[4] Submit Quiz\n[5] Exit\n");
+    		System.out.print(BLUE + "Enter Navigation choice:" + RESET);
+    		int choice;
+    		
+    		while (!in.hasNextInt()) {
+    			System.out.println(RED + "Invalid input. Please enter a number." + RESET);
+    			System.out.print(BLUE+ "Enter Navigation choice:" + RESET);
+    	        in.next();
+    		}
+    		choice = in.nextInt();
     		in.nextLine();
     		switch (choice) {
     		case 1:
@@ -126,24 +138,82 @@ public class Main {
     			
     			if (quizAnswered) {
     				System.out.print(RED + "-----Question is already answered." + RESET);
+    				q.nextQuestion();
     				done3 = false;
     			} else {
-    				System.out.print(BLUE + "-----Enter your answer: " + RESET);
+    				System.out.print(GREEN + "-----Enter your answer: " + RESET);
         			String userAnswer = in.nextLine();
         			if (userAnswer.trim().isEmpty()) {
         				System.out.println(RED + "answer can not be empty." + RESET);
         				done3 = false;
         			} else {
         				q.answerQuestion(currentQuiz.getQuizId(), userAnswer.toUpperCase());
+        				
         			}
     			}
     			
     			break;
-    		case 4:
+    		case 4: 
+    			if (q.getAnsweredCount() < q.getContainerCount()) {
+    				System.out.println(RED + "You have questions left unanswered, will you still submit?" + RESET);
+    				System.out.println("[1] YES\n[2] NO");
+    				System.out.print(BLUE + "Enter submit choice: " + RESET);
+    				int submitChoice = in.nextInt();
+    				in.nextLine();
+    				
+    				switch (submitChoice) {
+    				case 1:
+    					int score = quiz.getScore(currentQuiz.getQuizId());
+    					quiz.submitQuiz(currentStudent.getStudentId(), currentQuiz.getQuizId(), score);
+    					System.out.println(GREEN + "--------FINAL RESULT-------" + RESET);
+    					System.out.println("Student: " + currentStudent.getFirstName() +" "+ currentStudent.getLastName());
+    					System.out.println("Score: " + score + "/" + q.getContainerCount());
+    					String result = (score > 7) ? GREEN + "PASSED" + RESET :RED + "FAILED" + RESET;
+    					System.out.println("Result: " + result);
+    					System.exit(0);
+    					break;
+    				case 2:
+    					done3 = false;
+    					break;
+    				default:
+    					System.out.println(RED + "Invalid choice. Please enter a number between 1 and 2." + RESET);
+    	    	        done3 = false;
+    				}
+    			} else {
+    				System.out.println(RED + "Submit Quiz?" + RESET);
+    				System.out.println("[1] YES\n[2] NO");
+    				System.out.print(BLUE + "Enter submit choice: " + RESET);
+    				int submitChoice = in.nextInt();
+    				in.nextLine();
+    				
+    				switch (submitChoice) {
+    				case 1:
+    					int score = quiz.getScore(currentQuiz.getQuizId());
+    					quiz.submitQuiz(currentStudent.getStudentId(), currentQuiz.getQuizId(), score);
+    					System.out.println(GREEN + "--------FINAL RESULT-------" + RESET);
+    					System.out.println("Student: " + currentStudent.getFirstName() +" "+ currentStudent.getLastName());
+    					System.out.println("Score: " + score + "/" + q.getContainerCount());
+    					String result = (score > 7) ? GREEN + "PASSED" + RESET :RED + "FAILED" + RESET;
+    					System.out.println("Result: " + result);
+    					System.exit(0);
+    					break;
+    				case 2:
+    					done3 = false;
+    					break;
+    				default:
+    					System.out.println(RED + "Invalid choice. Please enter a number between 1 and 2." + RESET);
+    	    	        done3 = false;
+    				}
+    			}
+    			break;
+    		case 5:
     			// save the fucking progress boiiii    			
-    			System.out.println(GREEN + "Progress Saved!" + RESET);
+    			System.out.println(GREEN + "--------Progress Saved!" + RESET);
     			System.exit(0);
     			break;
+    		default:
+    	        System.out.println(RED + "Invalid choice. Please enter a number between 1 and 5." + RESET);
+    	        done3 = false;
     		}
 
     	}

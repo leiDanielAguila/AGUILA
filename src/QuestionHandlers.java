@@ -104,15 +104,21 @@ public class QuestionHandlers {
         		qp.setIsCorrect(true);
         	}
         	qp.setQuestionId(q.getQuestionId());
-        	String query = "insert into quiz (quiz_id,question_id,user_answer,is_correct values (?,?,?,?)";
-        	PreparedStatement ps = connection.prepareStatement(query);
+        	String query1 = "insert into quiz_progress (quiz_id,question_id,user_answer,is_correct) values (?,?,?,?)";
+        	PreparedStatement ps = connection.prepareStatement(query1);
         	
         	ps.setInt(1, qp.getQuizId());
         	ps.setInt(2, qp.getQuestionId());
         	ps.setString(3, qp.getUserAnswer());
         	ps.setBoolean(4, qp.getIsCorrect());
         	ps.executeUpdate();
-        	System.out.println(GREEN + "Question #" +q.getQuestionId() + " answered." + RESET);
+        	System.out.println(GREEN + "\nQuestion #" +q.getQuestionId() + " answered." + RESET);
+        	nextQuestion();
+        	String query2 = "update quiz set last_answered_question = ? where quiz_id = ?";
+        	PreparedStatement ps1 = connection.prepareStatement(query2);
+        	int index = questionContainer.indexOf(q);
+        	ps1.setInt(1, index);
+        	ps1.setInt(2, quizId);
 			ps.close();
 			connection.close();
 		} catch (Exception e) {
@@ -120,15 +126,15 @@ public class QuestionHandlers {
 		}
 	}
 	
-	public void displayUnansweredQuestions(int quizId) {
-		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
-        	Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/AGUILA", "root", "1234");
-        	String query = "select * from from quiz_progress where quiz_id = ? and user_answer = ?";
-		} catch (Exception e) {
-			System.out.println(RED + "-----error in displaying unanswered questions" + RESET + e);
-		}
-	}
+//	public void displayUnansweredQuestions(int quizId) {
+//		try {
+//			Class.forName("com.mysql.cj.jdbc.Driver");
+//        	Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/AGUILA", "root", "1234");
+//        	String query = "select * from from quiz_progress where quiz_id = ? and user_answer = ?";
+//		} catch (Exception e) {
+//			System.out.println(RED + "-----error in displaying unanswered questions" + RESET + e);
+//		}
+//	}
 	
 	public void populateQuizProgress(int quizId) {
 		

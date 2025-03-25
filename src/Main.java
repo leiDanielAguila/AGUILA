@@ -112,7 +112,7 @@ public class Main {
     		System.out.println("\n[1] Previous Question\n[2] Next Question\n[3] Answer Question\n[4] Exit\n");
     		System.out.print("Enter choice:");
     		int choice = in.nextInt();
-    		
+    		in.nextLine();
     		switch (choice) {
     		case 1:
     			q.previousQuestion();
@@ -122,10 +122,18 @@ public class Main {
     			break;
     		case 3:
     			// answer method
-    			System.out.println(q.getQuestionid());
+    			System.out.print(BLUE + "Enter your answer: " + RESET);
+    			String userAnswer = in.nextLine();
+    			if (userAnswer.trim().isEmpty()) {
+    				System.out.println(RED + "answer can not be empty." + RESET);
+    				done3 = false;
+    			} else {
+    				q.answerQuestion(currentQuiz.getQuizId(), userAnswer.toUpperCase());
+    			}
+    			
     			break;
     		case 4:
-    			// save the fucking progress boiiii
+    			// save the fucking progress boiiii    			
     			System.out.println(GREEN + "Progress Saved!" + RESET);
     			System.exit(0);
     			break;

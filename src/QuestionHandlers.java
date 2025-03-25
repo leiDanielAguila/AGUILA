@@ -87,8 +87,51 @@ public class QuestionHandlers {
             }
             
 		} catch (Exception e) {
-			System.out.println(RED + "-----error" + RESET + e);
+			System.out.println(RED + "-----error in updating current question" + RESET + e);
 		}
+	}
+	
+	public void answerQuestion(int quizId, String userAnswer) {
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+        	Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/AGUILA", "root", "1234");
+        	Question q = questionContainer.get(current_question);
+        	QuizProgress qp = new QuizProgress();
+        	
+        	qp.setQuizId(quizId);
+        	qp.setUserAnswer(userAnswer);
+        	if (userAnswer == q.getCorrectAnswer()) {
+        		qp.setIsCorrect(true);
+        	}
+        	qp.setQuestionId(q.getQuestionId());
+        	String query = "insert into quiz (quiz_id,question_id,user_answer,is_correct values (?,?,?,?)";
+        	PreparedStatement ps = connection.prepareStatement(query);
+        	
+        	ps.setInt(1, qp.getQuizId());
+        	ps.setInt(2, qp.getQuestionId());
+        	ps.setString(3, qp.getUserAnswer());
+        	ps.setBoolean(4, qp.getIsCorrect());
+        	ps.executeUpdate();
+        	System.out.println(GREEN + "Question #" +q.getQuestionId() + " answered." + RESET);
+			ps.close();
+			connection.close();
+		} catch (Exception e) {
+			System.out.println(RED + "-----error in answer question" + RESET + e);
+		}
+	}
+	
+	public void displayUnansweredQuestions(int quizId) {
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+        	Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/AGUILA", "root", "1234");
+        	String query = "select * from from quiz_progress where quiz_id = ? and user_answer = ?";
+		} catch (Exception e) {
+			System.out.println(RED + "-----error in displaying unanswered questions" + RESET + e);
+		}
+	}
+	
+	public void populateQuizProgress(int quizId) {
+		
 	}
 	
 	public int getQuestionid() {
@@ -199,8 +242,6 @@ public class QuestionHandlers {
         }
 	}
 	
-	public void answerQuestion() {
-		
-	}
+	
 		
 }
